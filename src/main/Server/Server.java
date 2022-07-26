@@ -34,20 +34,20 @@ public class Server {
     void makeServerSocketChannel() {
         try {
             //heartbeat 체크용
-            channelGroup2 = AsynchronousChannelGroup.withFixedThreadPool(
-                    Runtime.getRuntime().availableProcessors(),
-                    Executors.defaultThreadFactory()
-            );
-            heartbeatCheckServerSocketChannel = AsynchronousServerSocketChannel.open(channelGroup2);
-            heartbeatCheckServerSocketChannel.bind(new InetSocketAddress(5001));
-
-            //toUpper 처리용
             channelGroup1 = AsynchronousChannelGroup.withFixedThreadPool(
                     Runtime.getRuntime().availableProcessors(),
                     Executors.defaultThreadFactory()
             );
+            heartbeatCheckServerSocketChannel = AsynchronousServerSocketChannel.open(channelGroup1);
+            heartbeatCheckServerSocketChannel.bind(new InetSocketAddress(5001));
 
-            workerServerSocketChannel = AsynchronousServerSocketChannel.open(channelGroup1);
+            //toUpper 처리용
+            channelGroup2 = AsynchronousChannelGroup.withFixedThreadPool(
+                    Runtime.getRuntime().availableProcessors(),
+                    Executors.defaultThreadFactory()
+            );
+
+            workerServerSocketChannel = AsynchronousServerSocketChannel.open(channelGroup2);
             workerServerSocketChannel.bind(new InetSocketAddress(5002));
 
         } catch (Exception e) {

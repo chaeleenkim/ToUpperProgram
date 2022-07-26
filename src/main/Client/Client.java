@@ -16,6 +16,8 @@ public class Client {
     String data;
 
 
+
+    ByteBuffer sendBuffer = ByteBuffer.allocate(100);
     ByteBuffer receiveBuffer = ByteBuffer.allocate(100);
     Charset charset = Charset.forName("UTF-8");
 
@@ -34,7 +36,14 @@ public class Client {
                     connectionThreads.get(i).start();
                 }
                 while (true) {
-
+            /*
+                         //스레드 작업 정의
+                         if (finalI == 1) {
+                           heartbeatCheck();
+                         } else {
+                           toUpper();
+                         }
+            */
 
                 }
             }
@@ -83,14 +92,6 @@ public class Client {
                         }
                         return;*/
                     }
-            /*
-                         //스레드 작업 정의
-                         if (finalI == 1) {
-                           heartbeatCheck();
-                         } else {
-                           toUpper();
-                         }
-            */
                 }
 
 
@@ -137,8 +138,8 @@ public class Client {
 
     void send(String data, SocketChannel socketChannel) {
         try {
-            ByteBuffer byteBuffer = charset.encode(data);
-            socketChannel.write(byteBuffer);
+            sendBuffer = charset.encode(data);
+            socketChannel.write(sendBuffer);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -170,6 +171,43 @@ public class Client {
 
         }
 
+    }
+
+    ////////////////////
+
+    class ConnectionPool {
+
+        ArrayList<Connection> free;
+        ArrayList<Connection> used;
+
+        int maxCons = 10;
+        int numCons = 0;
+
+        ConnectionPool() {
+
+            while (numCons < maxCons) {
+                addConnection();
+            }
+
+
+        }
+
+        void addConnection() {
+
+        }
+
+
+
+    }
+
+    class Connection {
+        int id;
+        SocketChannel socketChannel;
+
+        Connection(int id, SocketChannel socketChannel) {
+            this.id = id;
+            this.socketChannel = socketChannel;
+        }
     }
 
 
